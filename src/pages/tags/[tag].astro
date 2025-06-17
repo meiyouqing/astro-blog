@@ -1,0 +1,32 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import BlogPost from "../../components/BlogPost.astro";
+
+export async function getStaticPaths() {
+  const allPosts = Object.values(import.meta.glob("../posts/*.md", { eager: true }));
+  const uniqTags = [...new Set(allPosts.map((post: any) => post.frontmatter.tags).flat())];
+  return uniqTags.map((tag) => ({
+    params: { tag },
+    props: { posts: allPosts.filter((post: any) => post.frontmatter.tags.includes(tag)) },
+  }));
+}
+
+const { tag } = Astro.params;
+const { posts } = Astro.props;
+---
+
+<BaseLayout pageTitle={tag}>
+  <div>tag:{tag}; posts: {posts.length}</div>
+
+  {
+    posts.length > 0 ? (
+      <ul>
+        {posts.map((post: any) => (
+          <BlogPost url={post.url} title={post.frontmatter.title} pubDate={post.frontmatter.pubDate} description={post.frontmatter.description} author={post.frontmatter.author} image={post.frontmatter.image} />
+        ))}
+      </ul>
+    ) : (
+      <p>No posts found for the tag "{tag}".</p>
+    )
+  }
+</BaseLayout>
