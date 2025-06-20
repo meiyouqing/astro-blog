@@ -5,6 +5,6 @@ const { title, url, pubDate } = Astro.props;
 <li>
   <a href={url}>
     <h2>{title}</h2>
-    <p>Published on: {pubDate.toString().slice(0, 10)}</p>
+    <p>Published on: {pubDate.toLocaleDateString()}</p>
   </a>
 </li>
